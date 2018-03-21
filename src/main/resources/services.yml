@@ -1,0 +1,3 @@
+services:
+- name: "OP001"
+  service: "http://localhost:8081/client/"
