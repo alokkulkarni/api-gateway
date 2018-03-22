@@ -55,7 +55,7 @@ class RewritePathGatewayFilter implements GatewayFilterFactory {
         return (exchange, chain) -> {
             HttpHeaders headers = exchange.getRequest().getHeaders();
             String opCode = headers.toSingleValueMap().get(regex);
-            Optional<Service> service1 = Optional.ofNullable( getCities().stream().filter( service -> service.getName().equalsIgnoreCase( opCode ) ).findAny().orElse( null ) );
+            Optional<Service> service1 = ServiceDetailsProvider.getInstance().getServiceBasedOnOpCode( opCode );
             final URI uri;
 
             if (service1.isPresent()) {
@@ -72,20 +72,4 @@ class RewritePathGatewayFilter implements GatewayFilterFactory {
         };
     }
 
-
-    private
-    List<Service> getCities() {
-        Properties yaml = loadCitiesYaml();
-        MutablePropertySources propertySources = new MutablePropertySources(  );
-        propertySources.addFirst( new PropertiesPropertySource( "services", yaml ) );
-        ConfigurationPropertySource source = new MapConfigurationPropertySource(yaml);
-        return new Binder(source).bind("services", Bindable.listOf(Service.class)).get();
-    }
-
-    private
-    Properties loadCitiesYaml() {
-        YamlPropertiesFactoryBean properties = new YamlPropertiesFactoryBean();
-        properties.setResources(new ClassPathResource("services.yml"));
-        return properties.getObject();
-    }
 }
