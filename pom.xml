@@ -25,18 +25,6 @@
 		<spring-cloud.version>Finchley.M8</spring-cloud.version>
 	</properties>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>org.springframework.cloud</groupId>
-				<artifactId>spring-cloud-gateway</artifactId>
-				<version>2.0.0.M8</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -47,6 +35,11 @@
 			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-config-client</artifactId>
+			<version>2.0.1.RELEASE</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
@@ -54,10 +47,20 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
-		</dependency>
+        <!--<dependency>-->
+            <!--<groupId>org.cfg4j</groupId>-->
+            <!--<artifactId>cfg4j-core</artifactId>-->
+            <!--<version>4.4.1</version>-->
+        <!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.cfg4j</groupId>-->
+			<!--<artifactId>cfg4j-git</artifactId>-->
+			<!--<version>4.4.1</version>-->
+		<!--</dependency>-->
+		<!--<dependency>-->
+			<!--<groupId>org.springframework.cloud</groupId>-->
+			<!--<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>-->
+		<!--</dependency>-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-properties-migrator</artifactId>
@@ -65,7 +68,22 @@
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-jwt</artifactId>
+			<version>1.0.9.RELEASE</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>5.0.0.RELEASE</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
@@ -73,7 +91,7 @@
 			<artifactId>reactor-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-	</dependencies>
+    </dependencies>
 
 	<dependencyManagement>
 		<dependencies>

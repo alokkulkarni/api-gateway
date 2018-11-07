@@ -1,28 +1,20 @@
 package com.example.gateway.gateway;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
-import org.springframework.boot.context.properties.bind.Bindable;
-import org.springframework.boot.context.properties.bind.Binder;
-import org.springframework.boot.context.properties.source.ConfigurationPropertySource;
-import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.NettyRoutingFilter;
 import org.springframework.cloud.gateway.filter.factory.GatewayFilterFactory;
-import org.springframework.core.env.MutablePropertySources;
-import org.springframework.core.env.PropertiesPropertySource;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.tuple.Tuple;
 
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.GATEWAY_REQUEST_URL_ATTR;
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
@@ -35,8 +27,6 @@ class RewritePathGatewayFilter implements GatewayFilterFactory {
 
     @Autowired
     private NettyRoutingFilter nettyRoutingFilter;
-    
-
 
     @Override
     public
@@ -55,17 +45,26 @@ class RewritePathGatewayFilter implements GatewayFilterFactory {
         return (exchange, chain) -> {
             HttpHeaders headers = exchange.getRequest().getHeaders();
             String opCode = headers.toSingleValueMap().get(regex);
-            Optional<Service> service1 = ServiceDetailsProvider.getInstance().getServiceBasedOnOpCode( opCode );
+            Optional<Service> service = null;
+            try {
+                service = ServiceDetailsProvider.getInstance().getServiceBasedOnOpCode( opCode );
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
             final URI uri;
-
-            if (service1.isPresent()) {
-                uri = URI.create( service1.get().getService() );
+            System.out.println("******************** " + service.get().toString());
+            if (service.isPresent()) {
+                uri = URI.create( service.get().getService() );
             } else {
                 setResponseStatus(exchange, HttpStatus.NOT_FOUND);
                 final ServerHttpResponse response = exchange.getResponse();
                 return response.setComplete();
             }
-            
+
+
+            //            String token = authorizationService.getAuthorizationToken();
+//            exchange.getResponse().getHeaders().add( "Authorization", token );
+
             exchange.getAttributes().put(GATEWAY_REQUEST_URL_ATTR, uri);
             
             return nettyRoutingFilter.filter( exchange, chain );

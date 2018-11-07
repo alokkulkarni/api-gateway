@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.tuple.Tuple;
 import reactor.core.publisher.Mono;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.springframework.cloud.gateway.support.ServerWebExchangeUtils.setResponseStatus;
@@ -29,7 +29,7 @@ class ValidationGatewayFilter implements GatewayFilterFactory {
         return ( exchange , chain ) -> {
             HttpHeaders headers = exchange.getRequest().getHeaders();
             String opCode = headers.toSingleValueMap().get(commandName);
-            boolean matches = opCode.matches( "^[o-pO-P0-9]+$" );
+            boolean matches = opCode.matches("^[o-pO-P0-9]+$");
             if (matches) {
                 return chain.filter( exchange ).then( Mono.justOrEmpty( matches ).then() );
             }
@@ -42,6 +42,6 @@ class ValidationGatewayFilter implements GatewayFilterFactory {
 
     @Override
     public List<String> argNames() {
-        return Arrays.asList(NAME_KEY);
+        return Collections.singletonList(NAME_KEY);
     }
 }
